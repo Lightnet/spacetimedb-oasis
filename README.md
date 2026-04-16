@@ -13,6 +13,11 @@
 # SpaceTimeDB
  - 2.1.0
 
+# Bugs:
+- Parent each other needs to fixed later.
+  - Need to clean up transform parent does not exist when remove.
+- if other users sync if there tables change it might refresh list for select entity.
+
 # Information:
   This project use SpacetimeDB that use as add on server module. To able to use browser to access the server database.
 
@@ -91,6 +96,7 @@ spacetime sql --server local spacetimedb-oasis "SELECT * FROM transform2d" > bac
 spacetime publish --server local spacetimedb-oasis --delete-data
 ```
  In case bug and can't update table error.
+
 
 # Credits:
 - https://spacetimedb.com/docs

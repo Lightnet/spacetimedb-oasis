@@ -45,6 +45,7 @@ export const w2Position = van.state({x:0,y:0});
 export const w2Rotation = van.state(0);
 export const w2Scale = van.state({x:1,y:1});
 
+export const phHolderVisible = van.state(true);
 export const phHolder = van.state(null);
 export const phMarker = van.state(null);
 
@@ -56,15 +57,15 @@ export const UI= {
   removeTransform3DBinding:null,
   component3DFolder:null,
   hierarchy3DFolder:null,
+  update_transform3d_parent:null,
   localTransform3DFolder:null,
+  //transform2d
   component2DFolder:null,
+  addTransform2DBinding:null,
+  removeTransform2DBinding:null,
   hierarchy2DFolder:null,
   update_transform2d_parent:null,
   localTransform2DFolder:null,
+  worldTransform2DFolder:null,
 };
-
-
-
-
-
 

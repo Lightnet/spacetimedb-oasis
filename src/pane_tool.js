@@ -10,28 +10,17 @@ import {
   dbTransform2Ds, 
   dbTransform3Ds,
   phHolder,
-  phPosition,
-  phQuaternion,
-  phRotation,
-  phScale,
+  phPosition, phQuaternion, phRotation, phScale,
   stateEntityId,
   stateParentId,
-  t2Position,
-  t2Rotation,
-  t2Scale,
-  t3Position,
-  t3Rotation,
-  t3Scale,
+  t2Position, t2Rotation,t2Scale, 
+  t3Position, t3Rotation, t3Scale,
+  w2Position, w2Rotation, w2Scale, w3Position, w3Rotation, w3Scale,
   UI,
-  w2Position,
-  w2Rotation,
-  w2Scale,
-  w3Position,
-  w3Rotation,
-  w3Scale,
+  phHolderVisible,
 } from './context';
 import { degreeToRadians } from './helper_transform3d';
-
+import { getRotationFromMatrix2D, getScaleFromMatrix2D, transformPoint2D } from './helper_transform2d';
 
 export function setup_Pane(){
   const conn = connState.val;
@@ -76,6 +65,13 @@ export function setup_Pane(){
   entityFolder.addButton({title: 'Entities Logs'}).on('click',()=>{
     console.log(dbEntities.val);
     console.log(dbTransform3Ds.val);
+  });
+  entityFolder.addBinding(phHolderVisible, 'val', {
+    label:'PH Holder Visible'
+  }).on('change', (ev) => {
+      const _phHolder = phHolder.val;
+      phHolderVisible.val = !phHolderVisible.val
+      _phHolder.visible = !phHolderVisible.val;
   });
 
   // entityFolder.addButton({title: 'Toggle T3'}).on('click',()=>{
@@ -124,9 +120,12 @@ export function setup_Pane(){
     oldId = entityId;
     // console.log("entityId: ",entityId)
     if (!entityId) return;
-    const t3 = dbTransform3Ds.val.get(entityId);
+    const t3 = dbTransform3Ds.rawVal.get(entityId);
     if(t3){
-      console.log("update 3d?");
+      if(UI.addTransform3DBinding) UI.addTransform3DBinding.disabled = true;
+      if(UI.removeTransform3DBinding) UI.removeTransform3DBinding.disabled = false;
+
+      // console.log("update 3d?");
       // console.log(t3);
       t3Position.val = t3.position;
       // t3Position.val = t3.position;
@@ -144,16 +143,36 @@ export function setup_Pane(){
       t3Scale.val = t3.scale;
       // refresh ui
       if(UI.localTransform3DFolder) UI.localTransform3DFolder.refresh();
+      if(UI.update_transform3d_parent) UI.update_transform3d_parent();
+    }else{
+      if(UI.addTransform3DBinding) UI.addTransform3DBinding.disabled = false;
+      if(UI.removeTransform3DBinding) UI.removeTransform3DBinding.disabled = true;
     }
-    const t2 = dbTransform2Ds.val.get(entityId);
-    console.log(dbTransform2Ds.val);
+
+    const t2 = dbTransform2Ds.rawVal.get(entityId);
+    // console.log(dbTransform2Ds.rawVal);
     if(t2){
-      console.log("update 2d?");
+      if(UI.addTransform2DBinding) UI.addTransform2DBinding.disabled = true;
+      if(UI.removeTransform2DBinding) UI.removeTransform2DBinding.disabled = false;
+      if(UI.localTransform2DFolder) UI.localTransform2DFolder.disabled = false;
+      if(UI.hierarchy2DFolder) UI.hierarchy2DFolder.disabled = false;
+      // console.log("update 2d?");
       t2Position.val = t2.position;
       t2Rotation.val = t2.rotation;
       t2Scale.val = t2.scale;
+
+      w2Position.val = transformPoint2D(t2.worldMatrix, 0, 0);
+      w2Rotation.val = getRotationFromMatrix2D(t2.worldMatrix);
+      w2Scale.val = getScaleFromMatrix2D(t2.worldMatrix);
+
       if(UI.update_transform2d_parent) UI.update_transform2d_parent();
       if(UI.localTransform2DFolder) UI.localTransform2DFolder.refresh();
+      if(UI.worldTransform2DFolder) UI.worldTransform2DFolder.refresh();
+    }else{
+      if(UI.addTransform2DBinding) UI.addTransform2DBinding.disabled = false;
+      if(UI.removeTransform2DBinding) UI.removeTransform2DBinding.disabled = true;
+      if(UI.localTransform2DFolder) UI.localTransform2DFolder.disabled = true;
+      if(UI.hierarchy2DFolder) UI.hierarchy2DFolder.disabled = true;
     }
   });
 
@@ -189,7 +208,6 @@ function setup_component3d(pane){
     title: 'Transform 3D',
   });
   
-
   transform3dFolder.addBinding(phPosition, 'val',{label:'Position'}).on('change',update_place_holder)
   transform3dFolder.addBinding(phRotation, 'val',{label:'Rotation'}).on('change',update_place_holder)
   transform3dFolder.addBinding(phScale, 'val',{label:'Scale'}).on('change',update_place_holder)
@@ -256,11 +274,11 @@ function setup_component3d(pane){
   UI.hierarchy3DFolder = hierarchy3DFolder
 
   // van.derive(()=>{
-  function update_transform2d_parent(){
-    console.log("parent 2d???")
+  function update_transform3d_parent(){
+    // console.log("parent 2d???")
     let parentId = "";
     if(UI.hierarchy3DParentBinding) UI.hierarchy3DParentBinding.dispose();
-    console.log(dbTransform3Ds.val)
+    // console.log(dbTransform3Ds.val)
     let transform3DsOptions = Array.from(dbTransform3Ds.val.keys()).map(id =>{
       // console.log(id);
       return {
@@ -269,6 +287,16 @@ function setup_component3d(pane){
       }
     });
     transform3DsOptions = [{ text: "None", value: "" },...transform3DsOptions];
+    transform3DsOptions=transform3DsOptions.filter(r=>r.value != stateEntityId.val);
+
+    const t3 = dbTransform3Ds.val.get( stateEntityId.val);
+    if(t3){
+      console.log(t3)
+      if(t3.parentId && t3.parentId != ""){
+        parentId=t3.parentId;
+      }
+    }
+
     
     UI.hierarchy3DParentBinding = hierarchy3DFolder.addBlade({
       view: 'list',
@@ -287,8 +315,8 @@ function setup_component3d(pane){
       })
     });
   }
-  update_transform2d_parent();
-  UI.update_transform2d_parent = update_transform2d_parent;
+  update_transform3d_parent();
+  UI.update_transform3d_parent = update_transform3d_parent;
   // });
 //-----------------------------------------------
 // LOCAL TRANSFORM 3D FOLDER
@@ -415,12 +443,14 @@ function setup_component2d(pane){
       id:stateEntityId.val,
     });
   })
+  UI.addTransform2DBinding = addTransform2DBinding;
   let removeTransform2DBinding = transform2DFolder.addButton({title:'Remove Transform 2D'}).on('click',()=>{
     const conn = connState.val;
     conn.reducers.removeEntityTransform2D({
       id:stateEntityId.val,
     });
   })
+  UI.removeTransform2DBinding = removeTransform2DBinding;
   transform2DFolder.addButton({title:'Transform 2D Log'}).on('click',()=>{
     console.log(dbTransform2Ds.val)
   });
@@ -428,6 +458,7 @@ function setup_component2d(pane){
   let hierarchy2DFolder = component2DFolder.addFolder({
     title: 'Transform 2D Hierarchy',
   });
+  UI.hierarchy2DFolder=hierarchy2DFolder;
 
   hierarchy2DFolder.addButton({title:'Refresh'}).on('click',()=>{
     // update_hierarchy_parent2d();
@@ -435,9 +466,9 @@ function setup_component2d(pane){
 
   van.derive(()=>{
     if(UI.hierarchy2DParentBinding) UI.hierarchy2DParentBinding.dispose();
-    let parentId = "";
+    let parentId = null;
 
-    console.log(dbTransform3Ds.val)
+    // console.log(dbTransform3Ds.val);
     let transform2DsOptions = Array.from(dbTransform2Ds.val.keys()).map(id =>{
       // console.log(id);
       return {
@@ -447,8 +478,17 @@ function setup_component2d(pane){
     });
     transform2DsOptions = [{ text: "None", value: "" },...transform2DsOptions];
     transform2DsOptions=transform2DsOptions.filter(r=>r.value != stateEntityId.val);
-    console.log(transform2DsOptions)
-    
+    // console.log(transform2DsOptions);
+
+    const t2 = dbTransform2Ds.rawVal.get(stateEntityId.val);
+    if(t2 && t2.entityId != ""){
+      console.log("ASSIGN ME PARENT???")
+      parentId = t2.parentId;
+    }else{
+      parentId = "";
+    }
+    console.log("PARENT ID:", parentId);
+
     UI.hierarchy2DParentBinding = hierarchy2DFolder.addBlade({
       view: 'list',
       label: 'Parent:',
@@ -458,13 +498,14 @@ function setup_component2d(pane){
       // selectEntity(event.value)
       // console.log(event.value);
       stateParentId.val = event.value;
-
       const conn = connState.val;
       conn.reducers.setT2Parent({
         id:stateEntityId.val,
         parentId:event.value
       })
     });
+    // UI.hierarchy2DParentBinding.refresh();
+    // hierarchy2DFolder.refresh();
   })
 //-----------------------------------------------
 // LOCAL TRANSFORM 2D
@@ -530,9 +571,20 @@ function setup_component2d(pane){
   let worldTransform2DFolder = component2DFolder.addFolder({
     title: 'World Transform 2D',
   });
+
+  UI.worldTransform2DFolder=worldTransform2DFolder;
   worldTransform2DFolder.addBinding(w2Position, 'val',{label:'Position', disabled:true});
   worldTransform2DFolder.addBinding(w2Rotation, 'val',{label:'Rotation', disabled:true});
   worldTransform2DFolder.addBinding(w2Scale, 'val',{label:'Scale', disabled:true});
 
 }
 
+
+function debug_pane(pane){
+
+}
+
+
+function test_pane(pane){
+
+}

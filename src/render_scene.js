@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ViewportGizmo } from "three-viewport-gizmo";
 import { dbTransform2Ds, dbTransform3Ds, phHolder, phMarker, stateEntityId, stateScene } from './context';
+import { getRotationFromMatrix2D, transformPoint2D } from './helper_transform2d';
 
 let scene, camera, renderer, gizmo, orbitControls, marker, ph_holder;
 
@@ -96,15 +97,15 @@ function update_select_marker(){
       }
       marker.visible = true;
     } else if(transform2d){
-      // const worldPos = transformPoint2D(transform2d.worldMatrix, 0, 0);
-      // let worldRotation = getRotationFromMatrix2D(transform2d.worldMatrix)
-      // // let worldScale = getScaleFromMatrix2D(transform2d.worldMatrix)
+      const worldPos = transformPoint2D(transform2d.worldMatrix, 0, 0);
+      let worldRotation = getRotationFromMatrix2D(transform2d.worldMatrix);
+      // let worldScale = getScaleFromMatrix2D(transform2d.worldMatrix)
 
-      // // worldRotation = row.rotation;
-      // marker.position.set(worldPos.x, worldPos.y, 0);
-      // marker.rotation.z = worldRotation;
-      // // marker.scale.set(worldScale.x, worldScale.y, 1);
-      // marker.visible = true;
+      // worldRotation = row.rotation;
+      marker.position.set(worldPos.x, worldPos.y, 0);
+      marker.rotation.z = worldRotation;
+      // marker.scale.set(worldScale.x, worldScale.y, 1);
+      marker.visible = true;
     }else{
       marker.visible = false;
     }

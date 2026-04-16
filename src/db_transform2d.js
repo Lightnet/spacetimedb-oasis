@@ -28,7 +28,7 @@ function create_transform2d(row){
 function addOrUpdateTransfrom2D(row){
   // console.log(row);
   if (!row || !row.entityId) return;
-  console.log("add test:", row);
+  // console.log("add test:", row);
   const currentMap = dbTransform2Ds.val;        // get current
   const newMap = new Map(currentMap);     // create copy
   newMap.set(row.entityId, row);
@@ -44,7 +44,7 @@ function deleteTransfrom2D(id) {
 }
 
 function onInsert_Transfrom2D(_ctx, row){
-  console.log("transform2d:", row);
+  // console.log("transform2d:", row);
   create_transform2d(row);
   addOrUpdateTransfrom2D(row);
 }
