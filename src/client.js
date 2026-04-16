@@ -122,16 +122,13 @@ const PARAMS = {
   t3_rotation:{x:0,y:0,z:0},
   t3_scale:{x:1,y:1,z:1},
 
-
   w3_position:{x:0,y:0,z:0},
   w3_rotation:{x:0,y:0,z:0},
   w3_scale:{x:1,y:1,z:1},
 
-
   t2_position:{x:0,y:0},
   t2_rotation:0,
   t2_scale:{x:1,y:1},
-
 
   w2_position:{x:0,y:0},
   w2_rotation:0,
@@ -193,9 +190,9 @@ function onDelete_Entity(_ctx, row){
 
 function setupDBEntity(){
   conn.subscriptionBuilder()
-    .subscribe(tables.entity)
-  conn.db.entity.onInsert(onInsert_Entity)
-  conn.db.entity.onDelete(onDelete_Entity)
+    .subscribe(tables.entity);
+  conn.db.entity.onInsert(onInsert_Entity);
+  conn.db.entity.onDelete(onDelete_Entity);
 }
 //-----------------------------------------------
 // TRANSFORM 3D
@@ -241,7 +238,6 @@ function update_model_transform3d(mesh, row){
     // console.log(newMatrix);
     mesh.matrix.copy(newMatrix);
   }
-  
 }
 
 function insert_model(row){
@@ -358,7 +354,6 @@ function delete_model2D(ctx, row){
     }
   }
   PARAMS.transform2d=PARAMS.transform2d.filter(r=>r.entityId!=row.entityId)
-
 }
 
 function setupDBTransform2D(){
@@ -371,11 +366,6 @@ function setupDBTransform2D(){
 //-----------------------------------------------
 // 
 //-----------------------------------------------
-
-
-
-
-
 function create_sample_mesh(row){
   //PARAMS.meshes: new Map(),
   //PARAMS.meshVertices: new Map(),
@@ -517,8 +507,6 @@ function setupDBMeshIndices(){
   conn.db.meshIndices.onUpdate(onUpdate_MeshIndices)
   conn.db.meshIndices.onDelete(onDelete_MeshIndices)
 }
-
-
 //-----------------------------------------------
 // 
 //-----------------------------------------------
@@ -676,7 +664,9 @@ deleteEntityBinding = entityFolder.addButton({title: 'Delete Entity'}).on('click
   } catch (error) {
     console.log("delete entity error!");
   }
-})
+});
+
+
 entityFolder.addButton({title: 'Entities Logs'}).on('click',()=>{
   console.log(PARAMS.entities);
   console.log(PARAMS.transform3d);
@@ -779,8 +769,6 @@ if(component3DFolder){
     component3DFolder.expanded = false;
   }
 }
-
-
 const transform3dFolder = component3DFolder.addFolder({
   title: 'Transform 3D',
 });
@@ -1009,9 +997,6 @@ if(component2DFolder){
     component2DFolder.expanded = false;
   }
 }
-
-
-
 let transform2DFolder = component2DFolder.addFolder({
   title: 'Transform 2D',
 });
@@ -1154,12 +1139,9 @@ worldTransform2DFolder.addBinding(PARAMS, 'w2_scale',{label:'Scale', disabled:tr
 //-----------------------------------------------
 // TEST
 //-----------------------------------------------
-
-
-const testEl = div({style:`position:fixed; top:2px; left:2px;`})
+const testEl = div({style:`position:fixed; top:30px; left:2px;`})
 van.add(document.body, testEl);
 const testPane = new Pane({container:testEl});
-
 
 // testPane.expanded = false;
 const testFolder = testPane.addFolder({
@@ -1174,33 +1156,25 @@ if(testFolder){
     testFolder.expanded = false;
   }
 }
-
 testFolder.addButton({title:'toggle test'}).on('click', async ()=>{
   togglePanel('testPane');
 });
-
 testFolder.addButton({title:'toggle 3DFolder'}).on('click', async ()=>{
   togglePanel('component3DFolder');
 });
-
 testFolder.addButton({title:'toggle test 3DFolder'}).on('click', async ()=>{
   togglePanel('t3Folder');
 });
-
-
 testFolder.addButton({title:'toggle 2DFolder'}).on('click', async ()=>{
   togglePanel('component2DFolder');
 });
-
 testFolder.addButton({title:'toggle test 2DFolder'}).on('click', async ()=>{
   togglePanel('t2Folder');
 });
-
 // testFolder.expanded = false;
 const t3Folder = testFolder.addFolder({
   title: 'Transform3D',
 });
-
 if(t3Folder){
   let currentTheme = localStorage.getItem('t3Folder');
   console.log(currentTheme);
@@ -1210,9 +1184,6 @@ if(t3Folder){
     t3Folder.expanded = false;
   }
 }
-
-
-
 // t3Folder.expanded = false;
 t3Folder.addButton({title:'get parent'}).on('click',async()=>{
   const t2dParent = await conn.procedures.getT3Parent({
@@ -1318,8 +1289,6 @@ const t2Folder = testFolder.addFolder({
   title: 'Transform2D',
 });
 // t2Folder.expanded = false;
-
-
 if(t2Folder){
   let currentTheme = localStorage.getItem('t2Folder');
   console.log(currentTheme);
@@ -1329,102 +1298,107 @@ if(t2Folder){
     t2Folder.expanded = false;
   }
 }
-
 t2Folder.addButton({title:'get parent'}).on('click',async()=>{
   const t2dParent = await conn.procedures.getT2Parent({
     id:PARAMS.entityId
   })
   console.log("t2dParent: ", t2dParent);
 });
-
 const localt2Folder = t2Folder.addFolder({
   title: 'Local Transform 2D',
 });
-
 localt2Folder.addButton({title:'get transform'}).on('click',async()=>{
   const t2d = await conn.procedures.getT2Local({
     id:PARAMS.entityId
   })
   console.log("local t2d: ", t2d)
 });
-
 localt2Folder.addButton({title:'get matrix'}).on('click',async()=>{
   const matrix = await conn.procedures.getT2LocalMatrix({
     id:PARAMS.entityId
   })
   console.log("local matrix: ", matrix)
 });
-
 localt2Folder.addButton({title:'get position'}).on('click',async()=>{
   const pos = await conn.procedures.getT2LocalPos({
     id:PARAMS.entityId
   })
   console.log("local pos: ", pos)
 });
-
 localt2Folder.addButton({title:'get rotation'}).on('click',async()=>{
   const rot = await conn.procedures.getT2LocalRot({
     id:PARAMS.entityId
   })
   console.log("local rot: ", rot)
 });
-
 localt2Folder.addButton({title:'get scale'}).on('click',async()=>{
   const scale = await conn.procedures.getT2LocalScale({
     id:PARAMS.entityId
   })
   console.log("local scale: ", scale)
 });
-
 const worldt2Folder = t2Folder.addFolder({
   title: 'World Transform 2D',
 });
-
 worldt2Folder.addButton({title:'get transform'}).on('click',async()=>{
   const t2d = await conn.procedures.getT2World({
     id:PARAMS.entityId
   })
   console.log("world t2d: ", t2d)
 });
-
 worldt2Folder.addButton({title:'get matrix'}).on('click',async()=>{
   const matrix = await conn.procedures.getT2WorldMatrix({
     id:PARAMS.entityId
   })
   console.log("world matrix: ", matrix)
 });
-
 worldt2Folder.addButton({title:'get position'}).on('click',async()=>{
   const pos = await conn.procedures.getT2WorldPos({
     id:PARAMS.entityId
   })
   console.log("world pos: ", pos)
 });
-
 worldt2Folder.addButton({title:'get rotation'}).on('click',async()=>{
   const rotation = await conn.procedures.getT2WorldRot({
     id:PARAMS.entityId
   })
   console.log("world rotation: ", rotation)
 });
-
 worldt2Folder.addButton({title:'get scale'}).on('click',async()=>{
   const scale = await conn.procedures.getT2WorldScale({
     id:PARAMS.entityId
   })
   console.log("world scale: ", scale)
 });
-
-
 const mesh3dFolder = testFolder.addFolder({
   title: 'Mesh',
 });
 
-mesh3dFolder.addButton({title:'create mesh test'}).on('click',async()=>{
-  conn.reducers.createSimpleMesh({
+
+mesh3dFolder.addButton({title:'delete mesh'}).on('click',async()=>{
+  conn.reducers.deleteMesh({
     id:PARAMS.entityId
   })
 });
+
+
+mesh3dFolder.addButton({title:'create mesh sample test'}).on('click',async()=>{
+  conn.reducers.createMesh({
+    id:PARAMS.entityId,
+    meshName: "My Square",
+    vertices: [
+      { x: -1, y: -1, z: 0 },   // 0
+      { x:  1, y: -1, z: 0 },   // 1
+      { x:  1, y:  1, z: 0 },   // 2
+      { x: -1, y:  1, z: 0 },   // 3
+    ],
+    indices: [
+      0, 1, 2,    // first triangle
+      0, 2, 3     // second triangle
+    ]
+  })
+});
+
 
 mesh3dFolder.addButton({title:'create mesh test'}).on('click',async()=>{
   conn.reducers.createSimpleMesh({
@@ -1437,7 +1411,6 @@ mesh3dFolder.addButton({title:'get db mesh test'}).on('click',async()=>{
   const smesh = conn.db.meshes.entityId.find(PARAMS.entityId);// does not work here
   console.log(smesh);
 });
-
 mesh3dFolder.addButton({title:'get mesh test'}).on('click',async()=>{
   console.log(PARAMS.entityId);
   const smesh = await conn.procedures.getMeshId({id:PARAMS.entityId});

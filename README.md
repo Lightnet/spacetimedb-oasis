@@ -18,12 +18,18 @@
 
   Prototype idea to create mesh tool. To able to create 3d models.
 
-# Type mesh create types:
-- triangles
-- meshVertices + meshIndices ( Grok recommended )
-- meshGeometry
+  Building module style format for entity component system. Since it need some basic logics to work.
 
-# features:
+# Type mesh create types:
+- [ ] triangles
+- [x] meshVertices + meshIndices ( Grok recommended )
+- [ ] meshGeometry
+
+## Notes:
+  Some idea for effects for triangles. It come down to make it module components.
+
+
+# Features:
 - mesh
   - [x] sample create test
 
