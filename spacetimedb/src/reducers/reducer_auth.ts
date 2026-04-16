@@ -1,11 +1,11 @@
 //-----------------------------------------------
-// 
+// REDUCER AUTH
 //-----------------------------------------------
 import { table, t, SenderError } from 'spacetimedb/server';
 import spacetimedb from '../module';
 import { validateName } from '../helpers/helper';
 //-----------------------------------------------
-// 
+// AUTH LOGIN
 //-----------------------------------------------
 export const auth_login = spacetimedb.reducer(
   { alias: t.string(), pass: t.string() }, (ctx, { alias, pass }) => {
@@ -31,7 +31,7 @@ export const auth_login = spacetimedb.reducer(
   // ctx.db.user.id.update({ ...user, name:alias });
 });
 //-----------------------------------------------
-// 
+// AUTH REGISTER
 //-----------------------------------------------
 export const auth_register = spacetimedb.reducer(
   { alias: t.string(), pass: t.string() }, (ctx, { alias, pass }) => {
@@ -66,7 +66,7 @@ export const auth_register = spacetimedb.reducer(
 
 });
 //-----------------------------------------------
-// 
+// AUTH LOGOUT
 //-----------------------------------------------
 export const auth_logout = spacetimedb.reducer(
   { alias: t.string(), pass: t.string() }, (ctx, { alias, pass }) => {
@@ -95,5 +95,4 @@ export const auth_logout = spacetimedb.reducer(
   }else{
     console.log("[ logout ]Not found user!");
   }
-
 });

@@ -6,14 +6,17 @@ export type Vec3 = { x: number; y: number; z: number };        // or keep using 
 export type Quat = { x: number; y: number; z: number; w: number };
 // Matrix as flat Float32Array-compatible array (column-major, same as THREE.Matrix4.elements)
 export type Mat4 = number[];   // length 16
-
+//-----------------------------------------------
 // Define a nested object type for coordinates
+//-----------------------------------------------
 export const Vect3 = t.object('Vect3', {
   x: t.f64(),
   y: t.f64(),
   z: t.f64(),
 });
-
+//-----------------------------------------------
+// QUAT
+//-----------------------------------------------
 export const Quat = t.object('Quat', {
   x: t.f64(),
   y: t.f64(),

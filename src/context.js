@@ -17,6 +17,10 @@ export const dbMeshes = van.state(new Map());
 export const dbMeshVertices= van.state(new Map());
 export const dbMeshIndices= van.state(new Map());
 
+//-----------------------------------------------
+// pane binding
+//-----------------------------------------------
+
 
 
 

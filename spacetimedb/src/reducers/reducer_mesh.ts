@@ -1,13 +1,12 @@
 //-----------------------------------------------
-// 
+// REDUCERS MESH
 //-----------------------------------------------
-import { table, t, SenderError } from 'spacetimedb/server';
+import { t, SenderError } from 'spacetimedb/server';
 import spacetimedb from '../module';
 import { Vect3 } from '../types/types_transform3d';
 //-----------------------------------------------
-// 
-//-----------------------------------------------
 // Example: Create a simple triangle mesh
+//-----------------------------------------------
 export const create_simple_mesh = spacetimedb.reducer(
   {
     id: t.string(),
@@ -73,8 +72,10 @@ create_mesh({
     0, 2, 3     // second triangle
   ]
 });
-
 */
+//------------------------------------------------
+// CREATE MESH WITH VERTICES AND INDICES
+//------------------------------------------------
 export const create_mesh = spacetimedb.reducer({
     id: t.string(),                    // Unique entity ID for this mesh
     meshName: t.string().optional(),   // Optional custom name
@@ -138,7 +139,9 @@ export const create_mesh = spacetimedb.reducer({
     console.log(`Created mesh "${meshName ?? 'Mesh_' + id}" with ${vertices.length} vertices and ${indices.length / 3} triangles`);
   }
 );
-
+//------------------------------------------------
+// DELETE MESH
+//------------------------------------------------
 export const delete_mesh = spacetimedb.reducer({
     id: t.string()                    // Unique entity ID for this mesh
   },
@@ -147,4 +150,19 @@ export const delete_mesh = spacetimedb.reducer({
     ctx.db.meshIndices.entityId.delete(id);
     ctx.db.meshVertices.entityId.delete(id);
     ctx.db.meshTriangles.entityId.delete(id);
+});
+
+// debug clean up mesh data.
+export const delete_all_meshes = spacetimedb.reducer((ctx)=>{
+  for(const mesh of ctx.db.meshes.iter()){
+    ctx.db.meshes.entityId.delete(mesh.entityId)
+  }
+
+  for(const meshv of ctx.db.meshVertices.iter()){
+    ctx.db.meshVertices.id.delete(meshv.id)
+  }
+
+  for(const meshi of ctx.db.meshIndices.iter()){
+    ctx.db.meshIndices.id.delete(meshi.id)
+  }
 });

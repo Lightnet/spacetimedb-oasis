@@ -1,5 +1,5 @@
 //-----------------------------------------------
-// 
+// REDUCERS TEST
 //-----------------------------------------------
 import { table, t, SenderError } from 'spacetimedb/server';
 import spacetimedb from '../module';

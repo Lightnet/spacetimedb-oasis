@@ -5,7 +5,7 @@ import { table, t } from 'spacetimedb/server';
 import spacetimedb from '../module';
 import { users } from '../tables/table_user';
 //-----------------------------------------------
-// 
+// MY USER
 //-----------------------------------------------
 export const my_user = spacetimedb.view(
   { name: 'my_user', public: true },

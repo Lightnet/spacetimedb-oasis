@@ -1,11 +1,11 @@
 //-----------------------------------------------
-// 
+// REDUCER USER
 //-----------------------------------------------
 import { table, t, SenderError } from 'spacetimedb/server';
 import spacetimedb from '../module';
 import { validateName } from '../helpers/helper';
 //-----------------------------------------------
-// 
+// SET NAME
 //-----------------------------------------------
 export const set_name = spacetimedb.reducer({ name: t.string() }, (ctx, { name }) => {
   validateName(name);

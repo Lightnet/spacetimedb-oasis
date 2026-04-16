@@ -17,7 +17,6 @@ export * from './reducers/reducer_transform3d';
 export * from './reducers/reducer_transform2d';
 export * from './reducers/reducer_mesh';
 
-
 export * from './procedures/procedure_transform2d';
 export * from './procedures/procedure_transform3d';
 export * from './procedures/procedure_meshes';

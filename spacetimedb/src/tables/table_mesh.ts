@@ -1,10 +1,10 @@
 //-----------------------------------------------
-// 
+// TABLE MESH
 //-----------------------------------------------
 import { table, t } from 'spacetimedb/server';
 import { Vect3 } from '../types/types_transform3d';
 //-----------------------------------------------
-// 
+// PH ENTITY REFS
 //-----------------------------------------------
 // export const entity = table(
 //   { 
@@ -15,6 +15,9 @@ import { Vect3 } from '../types/types_transform3d';
 //     id: t.string().primaryKey(),
 //   }
 // );
+//-----------------------------------------------
+// MESHES
+//-----------------------------------------------
 export const meshes = table(
   { 
     name: 'meshes', 
@@ -26,7 +29,7 @@ export const meshes = table(
   }
 );
 //-----------------------------------------------
-//
+// MESH TRIANGLES
 //-----------------------------------------------
 export const meshTriangles = table(
   { 
@@ -42,7 +45,7 @@ export const meshTriangles = table(
   }
 );
 //-----------------------------------------------
-// 
+// MESH VERTICES
 //-----------------------------------------------
 export const meshVertices = table(
   { 
@@ -56,7 +59,9 @@ export const meshVertices = table(
     position: Vect3,
   }
 );
-
+//-----------------------------------------------
+// MESH INDICES
+//-----------------------------------------------
 export const meshIndices = table(
   { 
     name: 'mesh_indices', 

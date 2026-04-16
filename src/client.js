@@ -1381,6 +1381,11 @@ mesh3dFolder.addButton({title:'delete mesh'}).on('click',async()=>{
   })
 });
 
+mesh3dFolder.addButton({title:'delete meshes'}).on('click',async()=>{
+  conn.reducers.deleteAllMeshes();
+});
+
+
 
 mesh3dFolder.addButton({title:'create mesh sample test'}).on('click',async()=>{
   conn.reducers.createMesh({

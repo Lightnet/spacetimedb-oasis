@@ -1,10 +1,10 @@
 //-----------------------------------------------
-// 
+// TABLE TRANSFORM 2D
 //-----------------------------------------------
 import { table, t } from 'spacetimedb/server';
 import { Vect2 } from '../types/types_transform2d';
 //-----------------------------------------------
-// 
+// TRANSFORM 2D
 //-----------------------------------------------
 export const transform2d = table(
   { 

@@ -2,13 +2,10 @@
 // HELPER TRANSFORM 2D
 //-----------------------------------------------
 // import { t, SenderError } from 'spacetimedb/server';
-
 import { type Matrix2D } from "../types/types_transform2d";
-
 //-----------------------------------------------
 // MATH
 //-----------------------------------------------
-
 export const identity: Matrix2D = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 
 export function translate2D(x: number, y: number): Matrix2D {

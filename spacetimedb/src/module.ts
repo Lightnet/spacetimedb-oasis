@@ -28,7 +28,7 @@ const spacetimedb = schema({
 // INIT
 //-----------------------------------------------
 export const init = spacetimedb.init(_ctx => {
-  console.log("===============INIT SPACETIMEDB APP NAME:::=========");
+  console.log("====::: INIT SPACETIMEDB OASIS :::====");
 });
 //-----------------------------------------------
 // ON CLIENT CONNECT

@@ -6,9 +6,8 @@ import { table, t } from 'spacetimedb/server';
 import spacetimedb from "../module";
 import { meshes } from '../tables/table_mesh';
 //-----------------------------------------------
-// 
+// GET MESH ID
 //-----------------------------------------------
-
 export const get_mesh_id = spacetimedb.procedure({ id: t.string() }, t.option(meshes.rowType), (ctx, { id }) => {
   // Call the reducer within a transaction
   return ctx.withTx(txCtx => {
@@ -20,10 +19,10 @@ export const get_mesh_id = spacetimedb.procedure({ id: t.string() }, t.option(me
       return undefined;
     }
   });
-  
 });
-
-
+//-----------------------------------------------
+// 
+//-----------------------------------------------
 // export const get_mesh = spacetimedb.procedure({ id: t.string() }, t.unit(), (ctx, { id }) => {
 //   // Call the reducer within a transaction
 //   ctx.withTx(txCtx => {
@@ -34,5 +33,4 @@ export const get_mesh_id = spacetimedb.procedure({ id: t.string() }, t.option(me
 //   });
 //   return {};
 // });
-
 
