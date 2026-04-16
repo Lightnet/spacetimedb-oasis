@@ -1,19 +1,59 @@
 //-----------------------------------------------
 // 
 //-----------------------------------------------
+import * as THREE from 'three';
 import { DbConnection, tables } from './module_bindings';
 import { connState, dbTransform3Ds, stateScene } from "./context";
+import { createBox } from './render_scene';
+
+function update_matrix_transform3d(mesh, row){
+  if(row.worldMatrix){
+    const newMatrix = new THREE.Matrix4();
+    newMatrix.fromArray(row.worldMatrix)
+    // console.log(newMatrix);
+    mesh.matrix.copy(newMatrix);
+  }
+}
+
+function create_transform3d(row){
+  let cube = createBox();
+  cube.userData.row = row
+  update_matrix_transform3d(cube, row)
+  const scene = stateScene.val;
+  scene.add(cube)
+}
+
+//
+function update_transform3d(row){
+
+}
+
+function addOrUpdateTransfrom3D(row){
+  if (!row || !row.entityId) return;
+  const currentMap = dbTransform3Ds.val;        // get current
+  const newMap = new Map(currentMap);     // create copy
+  newMap.set(row.entityId, row);
+  dbTransform3Ds.val = newMap;                  // assign new Map → triggers update
+}
+function deleteTransfrom3D(id) {
+  if (!id) return;
+  // Create new Map without the item
+  const newMap = new Map(dbTransform3Ds.val);
+  newMap.delete(id);
+  // Update the state (this is what makes VanJS detect the change)
+  dbTransform3Ds.val = newMap;
+}
 
 function onInsert_Transfrom3D(_ctx, row){
   console.log("transform3d:", row);
-  dbTransform3Ds.val.set(row.entityId, row);
+  create_transform3d(row)
+  addOrUpdateTransfrom3D(row);
 }
 
 function onUpdate_Transfrom3D(_ctx, oldRow, newRow){
   // console.log("transform3d:", newRow);
-  PARAMS.transform3d = PARAMS.transform3d.filter(r=>r.entityId != newRow.entityId);
-  PARAMS.transform3d.push(newRow);
-  update_model(newRow);
+  addOrUpdateTransfrom3D(newRow)
+  update_transform3d(newRow);
 }
 
 function onDelete_Transform3D(ctx, row){
@@ -23,7 +63,7 @@ function onDelete_Transform3D(ctx, row){
       scene.remove(mesh);
     }
   }
-  dbTransform3Ds.val.delete(row.entityId);
+  deleteTransfrom3D(row.entityId);
 }
 
 export function setupDBTransform3D(){

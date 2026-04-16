@@ -1,15 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ViewportGizmo } from "three-viewport-gizmo";
-import { stateScene } from './context';
+import { phHolder, phMarker, stateScene } from './context';
 
-let scene;
-let camera;
-let renderer;
-let gizmo;
-let orbitControls;
-let marker;
-let ph_holder;
+let scene, camera, renderer, gizmo, orbitControls, marker, ph_holder;
 
 export function createBox(color=0xffffff){
   const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -50,16 +44,18 @@ export function setup_three(){
   const edges = new THREE.EdgesGeometry(geometry);
   const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00 });
   marker = new THREE.LineSegments(edges, lineMaterial);
+  phMarker.val = marker;
   scene.add(marker)
+
+  ph_holder = createBox(0xebe534);
+  phHolder.val = ph_holder;
+  scene.add(ph_holder)
+  stateScene.val = scene;
 
   window.addEventListener('resize',onResize);
 
   // Start the loop
   renderer.setAnimationLoop(animate);
-
-  ph_holder = createBox(0xebe534)
-  scene.add(ph_holder)
-  stateScene.val = scene;
 }
 
 function onResize(){

@@ -79,22 +79,36 @@ function create_sample_mesh(row){
   const scene = stateScene.val;
   scene.add(mesh);
   // console.log(scene);;
-  // stateScene.val.add(mesh);
   // Store it
   // if (!PARAMS.readyMeshes) PARAMS.readyMeshes = new Map();
   // PARAMS.readyMeshes.set(entityId, mesh);
 
-  console.log(`✅ Three.js Mesh created: ${mesh.name} | ${vertexList.length} vertices, ${triangleList.length} triangles`);
+  // console.log(`✅ Three.js Mesh created: ${mesh.name} | ${vertexList.length} vertices, ${triangleList.length} triangles`);
 }
 
+function addOrUpdateMesh(row){
+  if (!row || !row.entityId) return;
+  const currentMap = dbMeshes.val;        // get current
+  const newMap = new Map(currentMap);     // create copy
+  newMap.set(row.entityId, row);
+  dbMeshes.val = newMap;                  // assign new Map → triggers update
+}
+function deleteMesh(id) {
+  if (!id) return;
+  // Create new Map without the item
+  const newMap = new Map(dbMeshes.val);
+  newMap.delete(id);
+  // Update the state (this is what makes VanJS detect the change)
+  dbMeshes.val = newMap;
+}
 function onInsert_Mesh(_ctx, row){
-  console.log("mesh:", row);
-  dbMeshes.val.set(row.entityId, row);
+  // console.log("mesh:", row);
+  addOrUpdateMesh(row)
   create_sample_mesh(row);
 }
 function onUpdate_Mesh(_ctx, oldRow, newRow){
   // console.log("transform3d:", newRow);
-  dbMeshes.val.set(newRow.entityId, newRow);
+  addOrUpdateMesh(newRow)
 }
 function onDelete_Mesh(ctx, row){
   const scene = stateScene.val;
@@ -103,7 +117,7 @@ function onDelete_Mesh(ctx, row){
       scene.remove(mesh);
     }
   }
-  dbMeshes.val.delete(row.entityId);
+  deleteMesh(row.entityId);
 }
 function setupDBMeshes(){
   const conn = connState.val;
@@ -116,13 +130,30 @@ function setupDBMeshes(){
 //-----------------------------------------------
 // 
 //-----------------------------------------------
+
+function addOrUpdateMeshVertices(row){
+  if (!row || !row.id) return;
+  const currentMap = dbMeshVertices.val;        // get current
+  const newMap = new Map(currentMap);           // create copy
+  newMap.set(row.id, row);
+  dbMeshVertices.val = newMap;                  // assign new Map → triggers update
+}
+function deleteMeshVertices(id) {
+  if (!id) return;
+  // Create new Map without the item
+  const newMap = new Map(dbMeshVertices.val);
+  newMap.delete(id);
+  // Update the state (this is what makes VanJS detect the change)
+  dbMeshVertices.val = newMap;
+}
+
 function onInsert_MeshVertices(_ctx, row){
-  console.log("meshVertices:", row);
-  dbMeshVertices.val.set(row.id, row);
+  // console.log("meshVertices:", row);
+  addOrUpdateMeshVertices(row);
 }
 function onUpdate_MeshVertices(_ctx, oldRow, newRow){
   // console.log("transform3d:", newRow);
-  dbMeshVertices.val.set(newRow.id, newRow);
+  addOrUpdateMeshVertices(newRow);
 }
 function onDelete_MeshVertices(ctx, row){
   const scene = stateScene.val;
@@ -131,7 +162,7 @@ function onDelete_MeshVertices(ctx, row){
       scene.remove(mesh);
     }
   }
-  dbMeshVertices.val.delete(row.id);
+  deleteMeshVertices(row.id);
 }
 function setupDBMeshVertices(){
   const conn = connState.val;
@@ -144,13 +175,29 @@ function setupDBMeshVertices(){
 //-----------------------------------------------
 // 
 //-----------------------------------------------
+function addOrUpdateMeshIndices(row){
+  if (!row || !row.id) return;
+  const currentMap = dbMeshIndices.val;        // get current
+  const newMap = new Map(currentMap);           // create copy
+  newMap.set(row.id, row);
+  dbMeshIndices.val = newMap;                  // assign new Map → triggers update
+}
+function deleteMeshIndices(id) {
+  if (!id) return;
+  // Create new Map without the item
+  const newMap = new Map(dbMeshIndices.val);
+  newMap.delete(id);
+  // Update the state (this is what makes VanJS detect the change)
+  dbMeshIndices.val = newMap;
+}
+
 function onInsert_MeshIndices(_ctx, row){
-  console.log("meshIndices:", row);
-  dbMeshIndices.val.set(row.id, row);
+  // console.log("meshIndices:", row);
+  addOrUpdateMeshIndices(row);
 }
 function onUpdate_MeshIndices(_ctx, oldRow, newRow){
   // console.log("transform3d:", newRow);
-  dbMeshIndices.val.set(newRow.id, newRow);
+  addOrUpdateMeshIndices(newRow);
 }
 function onDelete_MeshIndices(ctx, row){
   const scene = stateScene.val;
@@ -159,7 +206,7 @@ function onDelete_MeshIndices(ctx, row){
       scene.remove(mesh);
     }
   }
-  dbMeshIndices.val.delete(row.id);
+  deleteMeshIndices(row.id);
 }
 function setupDBMeshIndices(){
   const conn = connState.val;
@@ -169,7 +216,6 @@ function setupDBMeshIndices(){
   conn.db.meshIndices.onUpdate(onUpdate_MeshIndices)
   conn.db.meshIndices.onDelete(onDelete_MeshIndices)
 }
-
 
 export function setupMesh(){
   setupDBMeshIndices();

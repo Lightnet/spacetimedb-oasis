@@ -1,7 +1,6 @@
 import { DbConnection, tables } from './module_bindings';
 import { connState, dbEntities } from "./context";
 
-
 function addOrUpdateEntity(ent) {
   if (!ent || !ent.id) return;
   const currentMap = dbEntities.val;        // get current
@@ -20,8 +19,7 @@ function deleteEntity(id) {
 }
 
 function onInsert_Entity(_ctx, row){
-  console.log(row);
-  // dbEntities.val.set(row.id,row)
+  // console.log(row);
   addOrUpdateEntity(row);
 }
 
@@ -30,11 +28,8 @@ function onDelete_Entity(_ctx, row){
 }
 
 export function setupDBEntity(){
-  console.log(connState.val)
-
+  // console.log(connState.val)
   const conn = connState.val;
-  // dbEntities
-
   conn.subscriptionBuilder()
       .subscribe(tables.entity);
     conn.db.entity.onInsert(onInsert_Entity);
