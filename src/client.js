@@ -1017,7 +1017,7 @@ let t2dhierarchyFolder = component2DFolder.addFolder({
 });
 t2dhierarchyFolder.addButton({title:'Refresh'}).on('click',()=>{
   update_hierarchy_parent2d();
-})
+});
 
 hierarchyParentBinding = t2dhierarchyFolder.addBlade({
   view: 'list',

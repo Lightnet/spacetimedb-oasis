@@ -5,8 +5,8 @@ import * as THREE from 'three';
 import { DbConnection, tables } from './module_bindings';
 import { connState, dbTransform3Ds, stateScene } from "./context";
 import { createBox } from './render_scene';
-
-function update_matrix_transform3d(mesh, row){
+var scene;
+function update_transform3d_matrix(mesh, row){
   if(row.worldMatrix){
     const newMatrix = new THREE.Matrix4();
     newMatrix.fromArray(row.worldMatrix)
@@ -14,18 +14,20 @@ function update_matrix_transform3d(mesh, row){
     mesh.matrix.copy(newMatrix);
   }
 }
-
 function create_transform3d(row){
   let cube = createBox();
   cube.userData.row = row
-  update_matrix_transform3d(cube, row)
-  const scene = stateScene.val;
+  update_transform3d_matrix(cube, row)
+  // const scene = stateScene.val;
   scene.add(cube)
 }
-
-//
 function update_transform3d(row){
-
+  for(const mesh of scene.children ){
+    // console.log(mesh);
+    if(mesh.userData?.row?.entityId == row.entityId){
+      update_transform3d_matrix(mesh,row)
+    }
+  }
 }
 
 function addOrUpdateTransfrom3D(row){
@@ -67,6 +69,7 @@ function onDelete_Transform3D(ctx, row){
 }
 
 export function setupDBTransform3D(){
+  scene = stateScene.val;
   const conn = connState.val;
   conn.subscriptionBuilder()
     .subscribe(tables.transform3d)

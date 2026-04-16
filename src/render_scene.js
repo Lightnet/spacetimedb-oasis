@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ViewportGizmo } from "three-viewport-gizmo";
-import { phHolder, phMarker, stateScene } from './context';
+import { dbTransform2Ds, dbTransform3Ds, phHolder, phMarker, stateEntityId, stateScene } from './context';
 
 let scene, camera, renderer, gizmo, orbitControls, marker, ph_holder;
 
@@ -20,6 +20,16 @@ export function createBox(color=0xffffff){
   cubeLine.add( axesHelper );
   // console.log(cubeLine);
   return cubeLine;
+}
+
+export function create_2d(){
+  let size = 1
+  const geometry = new THREE.PlaneGeometry(size, size);
+  const edges = new THREE.EdgesGeometry(geometry);
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+  const mesh = new THREE.LineSegments(edges, lineMaterial);
+  // mesh.matrixAutoUpdate = false; // disable to use matrix
+  return mesh;
 }
 
 export function setup_three(){
@@ -44,6 +54,7 @@ export function setup_three(){
   const edges = new THREE.EdgesGeometry(geometry);
   const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00 });
   marker = new THREE.LineSegments(edges, lineMaterial);
+  marker.visible = false;
   phMarker.val = marker;
   scene.add(marker)
 
@@ -56,6 +67,48 @@ export function setup_three(){
 
   // Start the loop
   renderer.setAnimationLoop(animate);
+}
+
+function update_select_marker(){
+  if(!stateEntityId.val) return;
+  const marker = phMarker.val;
+
+  if(marker){
+    // const transform3d = PARAMS.transform3d.find(e => e.entityId === PARAMS.entityId);
+    // const transform2d = PARAMS.transform2d.find(e => e.entityId === PARAMS.entityId);
+    const transform3d = dbTransform3Ds.val.get(stateEntityId.val)
+    const transform2d = dbTransform2Ds.val.get(stateEntityId.val)
+    
+    
+    if(transform3d){
+      // console.log("found transform3d for marker...");
+      const matrix = new THREE.Matrix4();
+      if(transform3d.worldMatrix){
+        // console.log("transform3d worldMatrix:", transform3d.worldMatrix);
+        matrix.fromArray(transform3d.worldMatrix);
+        const position = new THREE.Vector3();
+        position.setFromMatrixPosition(matrix);
+        marker.position.set(
+          position.x,
+          position.y,
+          position.z
+        )
+      }
+      marker.visible = true;
+    } else if(transform2d){
+      // const worldPos = transformPoint2D(transform2d.worldMatrix, 0, 0);
+      // let worldRotation = getRotationFromMatrix2D(transform2d.worldMatrix)
+      // // let worldScale = getScaleFromMatrix2D(transform2d.worldMatrix)
+
+      // // worldRotation = row.rotation;
+      // marker.position.set(worldPos.x, worldPos.y, 0);
+      // marker.rotation.z = worldRotation;
+      // // marker.scale.set(worldScale.x, worldScale.y, 1);
+      // marker.visible = true;
+    }else{
+      marker.visible = false;
+    }
+  }
 }
 
 function onResize(){
@@ -79,7 +132,7 @@ function animate() {
   if(orbitControls){
     orbitControls.update();
   }
-  // update_select_marker();
+  update_select_marker();
   // const scene = stateScene.val;
   // renderer.render(scene, camera);
   renderer.render(scene, camera);

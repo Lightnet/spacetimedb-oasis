@@ -18,6 +18,7 @@ import { setupDBEntity } from './db_entity';
 import { setup_Pane } from './pane_tool';
 import { setup_three } from './render_scene';
 import { setupDBTransform3D } from './db_transform3d';
+import { setupDBTransform2D } from './db_transform2d';
 import { setupMesh } from './db_mesh';
 
 const { div, input, textarea, button, span, img, label, p, table, tr, td, tbody } = van.tags;
@@ -62,6 +63,6 @@ function initDB(){
   // setUpDBUser();
   setupDBEntity();
   setupDBTransform3D();
-  // setupDBTransform2D();
+  setupDBTransform2D();
   setupMesh();
 }

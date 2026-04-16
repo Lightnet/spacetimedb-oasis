@@ -22,10 +22,28 @@ export const sceneMeshes = van.state(new Map());
 // 
 //-----------------------------------------------
 export const stateEntityId = van.state('');
+export const stateParentId = van.state('');
 export const phPosition = van.state({x:0,y:0,z:0});
 export const phRotation = van.state({x:0,y:0,z:0});
 export const phQuaternion = van.state({x:0,y:0,z:0,w:1});
 export const phScale = van.state({x:1,y:1,z:1});
+
+export const t3Position = van.state({x:0,y:0,z:0});
+export const t3Rotation = van.state({x:0,y:0,z:0});
+export const t3Scale = van.state({x:0,y:0,z:0});
+
+export const w3Position = van.state({x:0,y:0,z:0});
+export const w3Rotation = van.state({x:0,y:0,z:0});
+export const w3Scale = van.state({x:1,y:1,z:1});
+
+
+export const t2Position = van.state({x:0,y:0});
+export const t2Rotation = van.state(0);
+export const t2Scale = van.state({x:1,y:1});
+
+export const w2Position = van.state({x:0,y:0});
+export const w2Rotation = van.state(0);
+export const w2Scale = van.state({x:1,y:1});
 
 export const phHolder = van.state(null);
 export const phMarker = van.state(null);
@@ -33,10 +51,16 @@ export const phMarker = van.state(null);
 //-----------------------------------------------
 // pane binding
 //-----------------------------------------------
-export const UI={
-  component3DFolder:null,
+export const UI= {
   addTransform3DBinding:null,
   removeTransform3DBinding:null,
+  component3DFolder:null,
+  hierarchy3DFolder:null,
+  localTransform3DFolder:null,
+  component2DFolder:null,
+  hierarchy2DFolder:null,
+  update_transform2d_parent:null,
+  localTransform2DFolder:null,
 };
 
 
