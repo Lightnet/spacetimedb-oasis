@@ -3,6 +3,7 @@
 //-----------------------------------------------
 import { table, t } from 'spacetimedb/server';
 import { Vect3 } from '../types/types_transform3d';
+import { UV2D } from '../types/types';
 //-----------------------------------------------
 // PH ENTITY REFS
 //-----------------------------------------------
@@ -57,6 +58,9 @@ export const meshVertices = table(
     entityId: t.string().index('btree'),      // links to meshes.entityId
     index: t.u32().index('btree'),            // sequential index in the vertex list (0, 1, 2...)
     position: Vect3,
+    uv:UV2D.optional(),
+    normal:Vect3.optional(),
+    color:t.string().optional(),
   }
 );
 //-----------------------------------------------

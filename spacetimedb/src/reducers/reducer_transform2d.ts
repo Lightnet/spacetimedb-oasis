@@ -57,7 +57,7 @@ export const add_entity_transform2d = spacetimedb.reducer(
       rotation: 0, //degree
       scale: { x: 1, y: 1 },
       entityId: id,
-      parentId: "",
+      parentId: undefined,
       isDirty: true,
       localMatrix: [
         1, 0, 0, // Column 1 (X-axis)

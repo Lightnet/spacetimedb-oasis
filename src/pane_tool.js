@@ -302,7 +302,6 @@ function setup_component3d(pane){
       }
     }
 
-    
     UI.hierarchy3DParentBinding = hierarchy3DFolder.addBlade({
       view: 'list',
       label: 'Parent:',
@@ -486,7 +485,7 @@ function setup_component2d(pane){
     // console.log(transform2DsOptions);
 
     const t2 = dbTransform2Ds.rawVal.get(stateEntityId.val);
-    if(t2 && t2.entityId != ""){
+    if(t2 && t2?.parentId && t2?.parentId != ""){// parentId = undefined
       console.log("ASSIGN ME PARENT???")
       parentId = t2.parentId;
     }else{
@@ -686,7 +685,243 @@ function test_pane(){
 
     conn.reducers.setKeyFrames({keys:keyframes});
   });
+  debug_transform(testPane);
+}
 
+function debug_transform(pane){
+  const t3Folder = pane.addFolder({
+    title: 'Transform3D',
+  }).on('fold', (ev) => {
+    // console.log(ev.expanded); // true if expanded, false if collapsed
+    localStorage.setItem('t3Folder',ev.expanded)
+  });
+  if(t3Folder){
+    const toggle = localStorage.getItem('t3Folder')
+    // console.log(typeof toggle)
+    // console.log(toggle)
+    if(toggle=='true'){
+      // console.log("expand")
+      t3Folder.expanded=true;
+    }else{
+      // console.log("not expand")
+      t3Folder.expanded=false;
+    }
+  }
+
+  const localt3Folder = t3Folder.addFolder({
+  title: 'local Transform3D',
+});
+const worldt3Folder = t3Folder.addFolder({
+  title: 'world Transform3D',
+});
+localt3Folder.addButton({title:'get local'}).on('click', async ()=>{
+  const conn = connState.val;
+  const transform2d = await conn.procedures.getT3Local({
+    id:stateEntityId.val,
+  })
+  console.log("local transform3d: ", transform2d)
+});
+localt3Folder.addButton({title:'get local matrix'}).on('click', async ()=>{
+  const conn = connState.val;
+  const mat = await conn.procedures.getT3LocalMatrix({
+    id:stateEntityId.val,
+  })
+  console.log("local mattix: ", mat)
+});
+localt3Folder.addButton({title:'get position'}).on('click', async ()=>{
+  const conn = connState.val;
+  const pos = await conn.procedures.getT3LocalPos({
+    id:stateEntityId.val,
+  })
+  console.log("local postion: ", pos)
+});
+localt3Folder.addButton({title:'get quaternion'}).on('click', async ()=>{
+  const conn = connState.val;
+  const quat = await conn.procedures.getT3LocalQuat({
+    id:stateEntityId.val,
+  })
+  console.log("local quat: ", quat)
+});
+localt3Folder.addButton({title:'get scale'}).on('click', async ()=>{
+  const conn = connState.val;
+  const scale = await conn.procedures.getT3LocalScale({
+    id:stateEntityId.val,
+  })
+  console.log("local scale: ", scale)
+});
+localt3Folder.addButton({title:'get rotation'}).on('click', async ()=>{
+  const conn = connState.val;
+  const rotate = await conn.procedures.getT3LocalRot({
+    id:stateEntityId.val,
+  })
+  console.log("local rotate: ", rotate)
+});
+worldt3Folder.addButton({title:'get world'}).on('click', async ()=>{
+  const conn = connState.val;
+  const t3d = await conn.procedures.getT3World({
+    id:stateEntityId.val,
+  })
+  console.log("world transform3d: ", t3d)
+});
+worldt3Folder.addButton({title:'get world matrix'}).on('click', async ()=>{
+  const conn = connState.val;
+  const mat = await conn.procedures.getT3WorldMatrix({
+    id:stateEntityId.val,
+  })
+  console.log("world mattix: ", mat)
+});
+worldt3Folder.addButton({title:'get position'}).on('click', async ()=>{
+  const conn = connState.val;
+  const pos = await conn.procedures.getT3WorldPos({
+    id:stateEntityId.val,
+  })
+  console.log("local pos: ", pos)
+});
+worldt3Folder.addButton({title:'get quaternion'}).on('click', async ()=>{
+  const conn = connState.val;
+  const quat = await conn.procedures.getT3WorldQuat({
+    id:stateEntityId.val,
+  })
+  console.log("local quat: ", quat)
+});
+worldt3Folder.addButton({title:'get rotation'}).on('click', async ()=>{
+  const conn = connState.val;
+  const rotation = await conn.procedures.getT3WorldRot({
+    id:stateEntityId.val,
+  })
+  console.log("local rotation: ", rotation)
+});
+worldt3Folder.addButton({title:'get scale'}).on('click', async ()=>{
+  const conn = connState.val;
+  const scale = await conn.procedures.getT3WorldScale({
+    id:stateEntityId.val,
+  })
+  console.log("local scale: ", scale)
+});
+t3Folder.addButton({title:'transform3d list'}).on('click',()=>{
+  console.log(dbTransform3Ds.val);
+});
+t3Folder.addButton({title:'update all transforms'}).on('click',()=>{
+  const conn = connState.val;
+  conn.reducers.updateAllTransform3Ds();
+});
+t3Folder.addButton({title:'set all transforms null'}).on('click',()=>{
+  const conn = connState.val;
+  conn.reducers.updateAllTransform3DsNull();
+});
+pane.addButton({title:'clear transforms'}).on('click',()=>{
+  const conn = connState.val;
+  conn.reducers.clearAllTransform2Ds();
+  conn.reducers.clearAllTransform3Ds();
+});
+
+//-----------------------------------------------
+// Transform 2D
+//-----------------------------------------------
+
+  const t2Folder = pane.addFolder({
+    title: 'Transform2D',
+  }).on('fold', (ev) => {
+    // console.log(ev.expanded); // true if expanded, false if collapsed
+    localStorage.setItem('t2Folder',ev.expanded)
+  });
+  if(t2Folder){
+    const toggle = localStorage.getItem('t2Folder')
+    // console.log(typeof toggle)
+    // console.log(toggle)
+    if(toggle=='true'){
+      // console.log("expand")
+      t2Folder.expanded=true;
+    }else{
+      // console.log("not expand")
+      t2Folder.expanded=false;
+    }
+  }
+
+  
+t2Folder.addButton({title:'get parent'}).on('click',async()=>{
+  const conn = connState.val;
+  const t2dParent = await conn.procedures.getT2Parent({
+    id:stateEntityId.val,
+  })
+  console.log("t2dParent: ", t2dParent);
+});
+const localt2Folder = t2Folder.addFolder({
+  title: 'Local Transform 2D',
+});
+localt2Folder.addButton({title:'get transform'}).on('click',async()=>{
+  const conn = connState.val;
+  const t2d = await conn.procedures.getT2Local({
+    id:stateEntityId.val,
+  })
+  console.log("local t2d: ", t2d)
+});
+localt2Folder.addButton({title:'get matrix'}).on('click',async()=>{
+  const conn = connState.val;
+  const matrix = await conn.procedures.getT2LocalMatrix({
+    id:stateEntityId.val,
+  })
+  console.log("local matrix: ", matrix)
+});
+localt2Folder.addButton({title:'get position'}).on('click',async()=>{
+  const conn = connState.val;
+  const pos = await conn.procedures.getT2LocalPos({
+    id:stateEntityId.val,
+  })
+  console.log("local pos: ", pos)
+});
+localt2Folder.addButton({title:'get rotation'}).on('click',async()=>{
+  const conn = connState.val;
+  const rot = await conn.procedures.getT2LocalRot({
+    id:stateEntityId.val,
+  })
+  console.log("local rot: ", rot)
+});
+localt2Folder.addButton({title:'get scale'}).on('click',async()=>{
+  const conn = connState.val;
+  const scale = await conn.procedures.getT2LocalScale({
+    id:stateEntityId.val,
+  })
+  console.log("local scale: ", scale)
+});
+const worldt2Folder = t2Folder.addFolder({
+  title: 'World Transform 2D',
+});
+worldt2Folder.addButton({title:'get transform'}).on('click',async()=>{
+  const conn = connState.val;
+  const t2d = await conn.procedures.getT2World({
+    id:stateEntityId.val,
+  })
+  console.log("world t2d: ", t2d)
+});
+worldt2Folder.addButton({title:'get matrix'}).on('click',async()=>{
+  const conn = connState.val;
+  const matrix = await conn.procedures.getT2WorldMatrix({
+    id:stateEntityId.val,
+  })
+  console.log("world matrix: ", matrix)
+});
+worldt2Folder.addButton({title:'get position'}).on('click',async()=>{
+  const conn = connState.val;
+  const pos = await conn.procedures.getT2WorldPos({
+    id:stateEntityId.val,
+  })
+  console.log("world pos: ", pos)
+});
+worldt2Folder.addButton({title:'get rotation'}).on('click',async()=>{
+  const conn = connState.val;
+  const rotation = await conn.procedures.getT2WorldRot({
+    id:stateEntityId.val,
+  })
+  console.log("world rotation: ", rotation)
+});
+worldt2Folder.addButton({title:'get scale'}).on('click',async()=>{
+  const conn = connState.val;
+  const scale = await conn.procedures.getT2WorldScale({
+    id:stateEntityId.val,
+  })
+  console.log("world scale: ", scale)
+});
 
 
 }

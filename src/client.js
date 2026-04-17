@@ -1299,6 +1299,7 @@ if(t2Folder){
     t2Folder.expanded = false;
   }
 }
+
 t2Folder.addButton({title:'get parent'}).on('click',async()=>{
   const t2dParent = await conn.procedures.getT2Parent({
     id:PARAMS.entityId
@@ -1375,7 +1376,6 @@ const mesh3dFolder = testFolder.addFolder({
   title: 'Mesh',
 });
 
-
 mesh3dFolder.addButton({title:'delete mesh'}).on('click',async()=>{
   conn.reducers.deleteMesh({
     id:PARAMS.entityId
@@ -1385,8 +1385,6 @@ mesh3dFolder.addButton({title:'delete mesh'}).on('click',async()=>{
 mesh3dFolder.addButton({title:'delete meshes'}).on('click',async()=>{
   conn.reducers.deleteAllMeshes();
 });
-
-
 
 mesh3dFolder.addButton({title:'create mesh sample test'}).on('click',async()=>{
   conn.reducers.createMesh({

@@ -40,9 +40,24 @@ export const create_simple_mesh = spacetimedb.reducer(
     const v1_id = "vertex_" + id + "_1";
     const v2_id = "vertex_" + id + "_2";
 
-    ctx.db.meshVertices.insert({ id: v0_id, entityId:id, index: 0, position: { x: -1, y: -1, z: 0 } });
-    ctx.db.meshVertices.insert({ id: v1_id, entityId:id, index: 1, position: { x:  1, y: -1, z: 0 } });
-    ctx.db.meshVertices.insert({ id: v2_id, entityId:id, index: 2, position: { x:  0, y:  1, z: 0 } });
+    ctx.db.meshVertices.insert({
+      id: v0_id, entityId: id, index: 0, position: { x: -1, y: -1, z: 0 },
+      uv: undefined,
+      normal: undefined,
+      color: undefined
+    });
+    ctx.db.meshVertices.insert({
+      id: v1_id, entityId: id, index: 1, position: { x: 1, y: -1, z: 0 },
+      uv: undefined,
+      normal: undefined,
+      color: undefined
+    });
+    ctx.db.meshVertices.insert({
+      id: v2_id, entityId: id, index: 2, position: { x: 0, y: 1, z: 0 },
+      uv: undefined,
+      normal: undefined,
+      color: undefined
+    });
 
     // 3. Insert one triangle using vertex indices
     ctx.db.meshIndices.insert({
@@ -111,12 +126,15 @@ export const create_mesh = spacetimedb.reducer({
       ctx.db.meshVertices.insert({
         id: vertexId,
         entityId: id,
-        index: index,                    // sequential index (0, 1, 2, ...)
+        index: index, // sequential index (0, 1, 2, ...)
         position: {
           x: vertex.x,
           y: vertex.y,
           z: vertex.z,
         },
+        uv: undefined,
+        normal: undefined,
+        color: undefined
       });
     });
 
