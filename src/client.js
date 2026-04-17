@@ -156,6 +156,7 @@ const conn = DbConnection.builder()
     // console.log("conn: ", conn);
     userIdentity.val = identity;
     initDB();
+    
   })
   .onDisconnect(() => {
     console.log('Disconnected from SpacetimeDB');
@@ -1139,7 +1140,7 @@ worldTransform2DFolder.addBinding(PARAMS, 'w2_scale',{label:'Scale', disabled:tr
 //-----------------------------------------------
 // TEST
 //-----------------------------------------------
-const testEl = div({style:`position:fixed; top:30px; left:2px;`})
+const testEl = div({style:`position:fixed; top:30px; left:2px;`});
 van.add(document.body, testEl);
 const testPane = new Pane({container:testEl});
 

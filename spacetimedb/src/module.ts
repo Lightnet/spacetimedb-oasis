@@ -8,6 +8,8 @@ import { entity} from './tables/table_entity';
 import { transform3d } from './tables/table_transform3d';
 import { transform2d } from './tables/table_transform2d';
 import { meshes, meshIndices, meshTriangles, meshVertices } from './tables/table_mesh';
+import { damageEvent } from './tables/table_event';
+import { messageEvent } from './tables/table_message';
 //-----------------------------------------------
 // SCEHEMA
 //-----------------------------------------------
@@ -18,11 +20,14 @@ const spacetimedb = schema({
   entity,
   transform3d,
   transform2d,
-  // 
+  // MESH
   meshes,
   meshTriangles,
   meshVertices,
-  meshIndices
+  meshIndices,
+  // EVENT
+  damageEvent,
+  messageEvent,
 });
 //-----------------------------------------------
 // INIT

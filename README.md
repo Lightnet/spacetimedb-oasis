@@ -33,10 +33,16 @@
 ## Notes:
   Some idea for effects for triangles. It come down to make it module components.
 
-
 # Features:
-- mesh
+- [ ] mesh
   - [x] sample create test
+- [ ] simple animation test
+- [ ] key frame editor
+- [ ] image
+- [ ] terrain
+- [ ] logic
+  - [ ] 
+- [ ] visual block ?
 
 
 # Config:
@@ -96,7 +102,6 @@ spacetime sql --server local spacetimedb-oasis "SELECT * FROM transform2d" > bac
 spacetime publish --server local spacetimedb-oasis --delete-data
 ```
  In case bug and can't update table error.
-
 
 # Credits:
 - https://spacetimedb.com/docs

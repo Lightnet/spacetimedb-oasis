@@ -22,6 +22,8 @@ import {
 import { degreeToRadians } from './helper_transform3d';
 import { getRotationFromMatrix2D, getScaleFromMatrix2D, transformPoint2D } from './helper_transform2d';
 
+const { div, input, textarea, button, span, img, label, p, table, tr, td, tbody } = van.tags;
+
 export function setup_Pane(){
   const conn = connState.val;
   // console.log(conn);
@@ -178,6 +180,9 @@ export function setup_Pane(){
 
   setup_component3d(pane);
   setup_component2d(pane);
+  setup_mesh(pane);
+
+  test_pane();
 }
 
 function setup_component3d(pane){
@@ -579,12 +584,109 @@ function setup_component2d(pane){
 
 }
 
+function setup_mesh(pane){
+  const mesh3dFolder = pane.addFolder({
+    title: 'Mesh 3D',
+  });
+
+  mesh3dFolder.addButton({title:'delete mesh'}).on('click',async()=>{
+    const conn = connState.val;
+    conn.reducers.deleteMesh({
+      id:stateEntityId.val
+    })
+  });
+
+  mesh3dFolder.addButton({title:'delete meshes'}).on('click',async()=>{
+    const conn = connState.val;
+    conn.reducers.deleteAllMeshes();
+  });
+
+  mesh3dFolder.addButton({title:'create mesh sample test'}).on('click',async()=>{
+    const conn = connState.val;
+    conn.reducers.createMesh({
+      id:stateEntityId.val,
+      meshName: "My Square",
+      vertices: [
+        { x: -1, y: -1, z: 0 },   // 0
+        { x:  1, y: -1, z: 0 },   // 1
+        { x:  1, y:  1, z: 0 },   // 2
+        { x: -1, y:  1, z: 0 },   // 3
+      ],
+      indices: [
+        0, 1, 2,    // first triangle
+        0, 2, 3     // second triangle
+      ]
+    })
+  });
+
+  mesh3dFolder.addButton({title:'create mesh test'}).on('click',async()=>{
+    const conn = connState.val;
+    conn.reducers.createSimpleMesh({
+      id:stateEntityId.val,
+    })
+  });
+
+
+
+}
+
 
 function debug_pane(pane){
 
 }
 
 
-function test_pane(pane){
+function test_pane(){
+  const testEl = div({style:`position:fixed; top:30px; left:2px;`});
+  console.log(testEl);
+  van.add(document.body, testEl);
+  const testPane = new Pane({container:testEl});
+
+  // testPane.expanded = false;
+  const testFolder = testPane.addFolder({
+    title: 'Test',
+  }).on('fold', (ev) => {
+    // console.log(ev.expanded); // true if expanded, false if collapsed
+    localStorage.setItem('testFolder',ev.expanded)
+  });
+
+  if(testFolder){
+    let currentTheme = localStorage.getItem('testFolder');
+    console.log(currentTheme);
+    if(currentTheme=='true'){
+      testFolder.expanded = true;
+    }else{
+      testFolder.expanded = false;
+    }
+  }
+  testFolder.addButton({title:'test key'}).on('click', async ()=>{
+    const conn = connState.val;
+
+    const keyframes = {
+      position: [
+        { time: 0.0, value: { x: 0, y: 0, z: 0 } },
+        { time: 1.5, value: { x: 3, y: 0, z: 0 } },
+        { time: 3.2, value: { x: 3, y: 3, z: 0 } },
+        { time: 5.0, value: { x: 0, y: 0, z: 0 } }
+      ],
+      quaternion: [
+        { time: 0.0, value: { x: 0, y: 0, z: 0, w: 1 } },
+        { time: 1.5, value: { x: 0, y: 1, z: 0, w: 0 } },
+        { time: 3.2, value: { x: 0, y: 0, z: 0, w: -1 } },
+        { time: 5.0, value: { x: 0, y: 0, z: 0, w: 1 } }
+      ],
+      scale: [
+        { time: 0.0, value: { x: 1, y: 1, z: 1 } },
+        { time: 1.5, value: { x: 1.8, y: 1.8, z: 1.8 } },
+        { time: 3.2, value: { x: 0.6, y: 0.6, z: 0.6 } },
+        { time: 5.0, value: { x: 1, y: 1, z: 1 } }
+      ]
+    };
+
+
+    conn.reducers.setKeyFrames({keys:keyframes});
+  });
+
+
 
 }
