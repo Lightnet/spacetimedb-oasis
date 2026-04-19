@@ -236,3 +236,28 @@ export function decomposeMatrix(matrix: number[]): {
   return { position, quaternion, scale };
 }
 
+export function markSubtreeDirty(ctx: any, rootEntityId: string) {
+  const toMark: string[] = [rootEntityId];
+  const visited = new Set<string>();
+
+  while (toMark.length > 0) {
+    const entityId = toMark.shift()!;
+    if (visited.has(entityId)) continue;
+    visited.add(entityId);
+
+    const transform = ctx.db.transform3d.entityId.find(entityId);
+    if (transform) {
+      if (!transform.isDirty) {
+        transform.isDirty = true;
+        ctx.db.transform3d.entityId.update(transform);
+      }
+    }
+
+    // Find direct children and queue them
+    for (const child of ctx.db.transform3d.iter()) {
+      if (child.parentId === entityId && !visited.has(child.entityId)) {
+        toMark.push(child.entityId);
+      }
+    }
+  }
+}

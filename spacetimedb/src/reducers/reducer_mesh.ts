@@ -87,6 +87,66 @@ create_mesh({
     0, 2, 3     // second triangle
   ]
 });
+
+
+
+
+// box
+  const vertices = [
+    // Front face (z = 1)
+    { x: -1, y: -1, z:  1 },  // 0
+    { x:  1, y: -1, z:  1 },  // 1
+    { x:  1, y:  1, z:  1 },  // 2
+    { x: -1, y:  1, z:  1 },  // 3
+
+    // Back face (z = -1)
+    { x: -1, y: -1, z: -1 },  // 4
+    { x:  1, y: -1, z: -1 },  // 5
+    { x:  1, y:  1, z: -1 },  // 6
+    { x: -1, y:  1, z: -1 }   // 7
+  ];
+
+  const indices = [
+    // Front
+    0, 1, 2,    0, 2, 3,
+    // Back
+    5, 4, 7,    5, 7, 6,
+    // Right
+    1, 5, 6,    1, 6, 2,
+    // Left
+    4, 0, 3,    4, 3, 7,
+    // Top
+    3, 2, 6,    3, 6, 7,
+    // Bottom
+    4, 5, 1,    4, 1, 0
+  ];
+
+  // Convert vertices to flat Float32Array (required for BufferGeometry)
+  const positions = new Float32Array(vertices.length * 3);
+  vertices.forEach((v, i) => {
+    positions[i * 3]     = v.x;
+    positions[i * 3 + 1] = v.y;
+    positions[i * 3 + 2] = v.z;
+  });
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+
+  // Optional: compute normals for proper lighting
+  geometry.computeVertexNormals();
+
+  const material = new THREE.MeshPhongMaterial({ 
+    color: 0x00aaff,
+    shininess: 30
+  });
+
+  const boxMesh = new THREE.Mesh(geometry, material);
+  return boxMesh;
+
+
+
+
 */
 //------------------------------------------------
 // CREATE MESH WITH VERTICES AND INDICES

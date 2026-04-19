@@ -1,7 +1,12 @@
 //-----------------------------------------------
 // main
 //-----------------------------------------------
-import spacetimedb, {init , onConnect, onDisconnect} from './module';
+import spacetimedb, {
+  init, 
+  onConnect, 
+  onDisconnect,
+  update_transform3d_animation,
+} from './module';
 
 // import { set_name } from './reducers/reducer_user'
 // import { my_user } from './views/view_user';
@@ -16,6 +21,7 @@ export * from './reducers/reducer_entity';
 export * from './reducers/reducer_transform3d';
 export * from './reducers/reducer_transform2d';
 export * from './reducers/reducer_mesh';
+export * from './reducers/reducer_animation';
 
 export * from './procedures/procedure_transform2d';
 export * from './procedures/procedure_transform3d';
@@ -28,6 +34,7 @@ export {
   init,
   onConnect,
   onDisconnect,
+  update_transform3d_animation,
   // 
   // set_name,
   // my_user,

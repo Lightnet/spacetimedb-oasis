@@ -18,6 +18,15 @@ import {
   w2Position, w2Rotation, w2Scale, w3Position, w3Rotation, w3Scale,
   UI,
   phHolderVisible,
+  dbAnimationClips,
+  selectAnimationClip,
+  dbEntityAnimations,
+  selectEntityAnimation,
+  selectTransform3DAnimation,
+  animation_time,
+  animationPlayBackSpeed,
+  animationIsLooping,
+  animationIsPlayinging,
 } from './context';
 import { degreeToRadians } from './helper_transform3d';
 import { getRotationFromMatrix2D, getScaleFromMatrix2D, transformPoint2D } from './helper_transform2d';
@@ -618,6 +627,43 @@ function setup_mesh(pane){
     })
   });
 
+
+  mesh3dFolder.addButton({title:'create mesh cube test'}).on('click',async()=>{
+    const conn = connState.val;
+    conn.reducers.createMesh({
+      id:stateEntityId.val,
+      meshName: "My Square",
+      vertices: [
+        // Front face (z = 1)
+        { x: -1, y: -1, z:  1 },  // 0
+        { x:  1, y: -1, z:  1 },  // 1
+        { x:  1, y:  1, z:  1 },  // 2
+        { x: -1, y:  1, z:  1 },  // 3
+        // Back face (z = -1)
+        { x: -1, y: -1, z: -1 },  // 4
+        { x:  1, y: -1, z: -1 },  // 5
+        { x:  1, y:  1, z: -1 },  // 6
+        { x: -1, y:  1, z: -1 }   // 7
+
+
+      ],
+      indices: [
+      // Front
+      0, 1, 2,    0, 2, 3,
+      // Back
+      5, 4, 7,    5, 7, 6,
+      // Right
+      1, 5, 6,    1, 6, 2,
+      // Left
+      4, 0, 3,    4, 3, 7,
+      // Top
+      3, 2, 6,    3, 6, 7,
+      // Bottom
+      4, 5, 1,    4, 1, 0
+      ]
+    })
+  });
+
   mesh3dFolder.addButton({title:'create mesh test'}).on('click',async()=>{
     const conn = connState.val;
     conn.reducers.createSimpleMesh({
@@ -658,34 +704,9 @@ function test_pane(){
       testFolder.expanded = false;
     }
   }
-  testFolder.addButton({title:'test key'}).on('click', async ()=>{
-    const conn = connState.val;
 
-    const keyframes = {
-      position: [
-        { time: 0.0, value: { x: 0, y: 0, z: 0 } },
-        { time: 1.5, value: { x: 3, y: 0, z: 0 } },
-        { time: 3.2, value: { x: 3, y: 3, z: 0 } },
-        { time: 5.0, value: { x: 0, y: 0, z: 0 } }
-      ],
-      quaternion: [
-        { time: 0.0, value: { x: 0, y: 0, z: 0, w: 1 } },
-        { time: 1.5, value: { x: 0, y: 1, z: 0, w: 0 } },
-        { time: 3.2, value: { x: 0, y: 0, z: 0, w: -1 } },
-        { time: 5.0, value: { x: 0, y: 0, z: 0, w: 1 } }
-      ],
-      scale: [
-        { time: 0.0, value: { x: 1, y: 1, z: 1 } },
-        { time: 1.5, value: { x: 1.8, y: 1.8, z: 1.8 } },
-        { time: 3.2, value: { x: 0.6, y: 0.6, z: 0.6 } },
-        { time: 5.0, value: { x: 1, y: 1, z: 1 } }
-      ]
-    };
-
-
-    conn.reducers.setKeyFrames({keys:keyframes});
-  });
   debug_transform(testPane);
+  animation_pane(testPane);
 }
 
 function debug_transform(pane){
@@ -922,6 +943,184 @@ worldt2Folder.addButton({title:'get scale'}).on('click',async()=>{
   })
   console.log("world scale: ", scale)
 });
+
+
+}
+
+function animation_pane(pane){
+  const animationFolder = pane.addFolder({
+    title: 'Animation 3D',
+  }).on('fold', (ev) => {
+    // console.log(ev.expanded); // true if expanded, false if collapsed
+    localStorage.setItem('animationFolder',ev.expanded)
+  });
+  if(animationFolder){
+    const toggle = localStorage.getItem('animationFolder')
+    // console.log(typeof toggle)
+    // console.log(toggle)
+    if(toggle=='true'){
+      // console.log("expand")
+      animationFolder.expanded=true;
+    }else{
+      // console.log("not expand")
+      animationFolder.expanded=false;
+    }
+  }
+
+  animationFolder.addButton({title:'create sample keys'}).on('click', async ()=>{
+    const conn = connState.val;
+
+    const keyframes = {
+      position: [
+        { time: 0.0, value: { x: 0, y: 0, z: 0 } },
+        { time: 1.5, value: { x: 3, y: 0, z: 0 } },
+        { time: 3.2, value: { x: 3, y: 3, z: 0 } },
+        { time: 5.0, value: { x: 0, y: 0, z: 0 } }
+      ],
+      quaternion: [
+        { time: 0.0, value: { x: 0, y: 0, z: 0, w: 1 } },
+        { time: 1.5, value: { x: 0, y: 1, z: 0, w: 0 } },
+        { time: 3.2, value: { x: 0, y: 0, z: 0, w: -1 } },
+        { time: 5.0, value: { x: 0, y: 0, z: 0, w: 1 } }
+      ],
+      scale: [
+        { time: 0.0, value: { x: 1, y: 1, z: 1 } },
+        { time: 1.5, value: { x: 1.8, y: 1.8, z: 1.8 } },
+        { time: 3.2, value: { x: 0.6, y: 0.6, z: 0.6 } },
+        { time: 5.0, value: { x: 1, y: 1, z: 1 } }
+      ]
+    };
+
+    conn.reducers.setKeyFrames({
+      id:"testt",
+      keys:keyframes,
+    });
+  });
+
+  animationFolder.addButton({title:'get animation clips'}).on('click', async ()=>{
+    console.log("Animation Clip id:", selectAnimationClip.val);
+  })
+  const animationClipsFolder = animationFolder.addFolder({title: 'Animation Clips'});
+  let selectAnimationClipsBinding;
+  van.derive(()=>{
+    if(selectAnimationClipsBinding) selectAnimationClipsBinding.dispose();
+    const animationClips = dbAnimationClips.val;
+    
+    const entitiesOptions = Array.from(animationClips.keys()).map(id => ({
+        text: id,
+        value: id,
+    }));
+    // console.log(entitiesOptions);
+    selectAnimationClipsBinding = animationClipsFolder.addBlade({
+      view: 'list',
+      label: 'Select:',
+      options: entitiesOptions,
+      value: '',
+    }).on('change',(event)=>{
+      // selectEntity(event.value)
+      console.log("select animation clip:",event.value);
+      selectAnimationClip.val = event.value
+    });
+  });
+
+  const entityAnimationFolder = animationFolder.addFolder({title: 'Entity Animation'});
+
+  entityAnimationFolder.addBinding(animation_time, 'val',{label:"Time"});
+  entityAnimationFolder.addBinding(animationPlayBackSpeed, 'val',{label:"Playback Speed"});
+  entityAnimationFolder.addBinding(animationIsLooping, 'val',{label:"Is Looping"});
+  entityAnimationFolder.addBinding(animationIsPlayinging, 'val',{label:"Is Playing"});
+
+  let selectEntityAnimationBinding;
+  van.derive(()=>{
+    if(selectEntityAnimationBinding) selectEntityAnimationBinding.dispose();
+    const animationClips = dbEntityAnimations.val;
+    console.log(animationClips);
+    
+    const entitiesOptions = Array.from(animationClips.keys()).map(id => ({
+        text: id,
+        value: id,
+    }));
+    console.log("selectEntityAnimationBinding");
+    console.log(entitiesOptions);
+
+
+    selectEntityAnimationBinding = entityAnimationFolder.addBlade({
+      view: 'list',
+      label: 'Select:',
+      options: entitiesOptions,
+      value: '',
+    }).on('change',(event)=>{
+      // selectEntity(event.value)
+      console.log("select animation clip:",event.value);
+      selectEntityAnimation.val = event.value
+    });
+  });
+
+  const transform3DAnimationFolder = animationFolder.addFolder({title: 'Transform 3D'});
+
+  let selectTransform3DAnimationBinding;
+  van.derive(()=>{
+    if(selectTransform3DAnimationBinding) selectTransform3DAnimationBinding.dispose();
+    const animationClips = dbTransform3Ds.val;
+    
+    const entitiesOptions = Array.from(animationClips.keys()).map(id => ({
+        text: id,
+        value: id,
+    }));
+    // console.log(entitiesOptions);
+    selectTransform3DAnimationBinding = transform3DAnimationFolder.addBlade({
+      view: 'list',
+      label: 'Select:',
+      options: entitiesOptions,
+      value: '',
+    }).on('change',(event)=>{
+      // selectEntity(event.value)
+      console.log("select animation clip:",event.value);
+      selectTransform3DAnimation.val = event.value;
+    });
+  });
+
+  const animationPlay3DFolder = animationFolder.addFolder({title: 'Animation Control'});
+
+  animationFolder.addButton({title:'Create Entity Animation'}).on('click', async ()=>{
+    const conn = connState.val;
+    conn.reducers.createTransform3DAnimation({
+      id:selectAnimationClip.val,
+      entityId:selectTransform3DAnimation.val,
+      time:animation_time.val,
+      speed:animationPlayBackSpeed.val,
+      isLoop:animationIsLooping.val,
+      isPlaying:animationIsPlayinging.val,
+    })
+  })
+
+  animationFolder.addButton({title:'Set Transform3D Animation'}).on('click', async ()=>{
+    const conn = connState.val;
+  })
+
+
+  animationFolder.addButton({title:'Delete Transform3D Animation'}).on('click', async ()=>{
+    const conn = connState.val;
+    conn.reducers.deleteTransform3DAnimation({
+      id:selectEntityAnimation.val
+    });
+  })
+
+
+  animationFolder.addButton({title:'Play'}).on('click', async ()=>{
+    const conn = connState.val;
+    conn.reducers.playAnimation({
+      id:selectEntityAnimation.val
+    });
+    
+  })
+
+  animationFolder.addButton({title:'Stop'}).on('click', async ()=>{
+    const conn = connState.val;
+    conn.reducers.stopAnimation({
+      id:selectEntityAnimation.val
+    });
+  })
 
 
 }

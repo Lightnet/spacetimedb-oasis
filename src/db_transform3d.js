@@ -53,7 +53,7 @@ function onInsert_Transfrom3D(_ctx, row){
 }
 
 function onUpdate_Transfrom3D(_ctx, oldRow, newRow){
-  // console.log("transform3d:", newRow);
+  console.log("transform3d:", newRow);
   addOrUpdateTransfrom3D(newRow)
   update_transform3d(newRow);
 }

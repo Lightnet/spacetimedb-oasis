@@ -50,6 +50,22 @@ export const phHolder = van.state(null);
 export const phMarker = van.state(null);
 
 //-----------------------------------------------
+//
+//-----------------------------------------------
+export const dbAnimationClips = van.state(new Map());
+export const dbEntityAnimations = van.state(new Map());
+
+export const animation_time = van.state(5);
+export const animationPlayBackSpeed = van.state(1);
+export const animationIsLooping = van.state(false);
+export const animationIsPlayinging = van.state(false);
+
+export const selectAnimationClip = van.state('');
+export const selectEntityAnimation = van.state('');
+export const selectTransform3DAnimation = van.state('');
+
+
+//-----------------------------------------------
 // pane binding
 //-----------------------------------------------
 export const UI= {

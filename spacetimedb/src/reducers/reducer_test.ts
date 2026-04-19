@@ -7,6 +7,12 @@ import { Quat, Vect3 } from '../types/types_transform3d';
 //-----------------------------------------------
 // 
 //-----------------------------------------------
+
+// export const test_foo = spacetimedb.reducer((ctx) => {
+//   ctx.db.damageEvent.iter()
+//   console.log("bar")
+// });
+
 // export const test_foo = spacetimedb.reducer((ctx) => {
 //   console.log("bar")
 // });
